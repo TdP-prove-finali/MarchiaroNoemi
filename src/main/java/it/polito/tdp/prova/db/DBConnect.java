@@ -1,4 +1,4 @@
-package it.polito.tdp.nyc.db;
+package it.polito.tdp.prova.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -9,18 +9,21 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 
-public class DBConnect {
+public class DBConnect 
+{
 
-	private static String jdbcURL = "jdbc:mysql://localhost/NYC-hotspots";
+	private static String jdbcURL = "jdbc:mysql://localhost/dati_tesi";
 	private static HikariDataSource ds;
 
-	public static Connection getConnection() {
+	public static Connection getConnection() 
+	{
 
-		if (ds == null) {
+		if (ds == null) 
+		{
 			HikariConfig config = new HikariConfig();
 			config.setJdbcUrl(jdbcURL);
 			config.setUsername("root");
-			config.setPassword("");
+			config.setPassword("S4nsone1");
 			
 			// configurazione MySQL
 			config.addDataSourceProperty("cachePrepStmts", "true");
@@ -30,11 +33,13 @@ public class DBConnect {
 			ds = new HikariDataSource(config);
 		}
 
-		try {
+		try 
+		{
 			Connection c = ds.getConnection();
 			return c;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 			return null;
 		}

@@ -1,26 +1,28 @@
-package it.polito.tdp.nyc;
+package it.polito.tdp.prova;
 
+import it.polito.tdp.prova.model.Model;
 import javafx.application.Application;
-import it.polito.tdp.nyc.model.Model;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
-public class EntryPoint extends Application {
+public class EntryPoint extends Application 
+{
 
     @Override
-    public void start(Stage stage) throws Exception {
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
+    public void start(Stage stage) throws Exception 
+    {
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statoCassonetti.fxml"));
     	Parent root = loader.load();
         Scene scene = new Scene(root);
          
         Model model = new Model();
-        FXMLController controller = loader.getController();
+        StatoCassonettiController controller = loader.getController();
         controller.setModel(model);
         
-        stage.setTitle("2022-05-31-simulazione");
+        stage.setTitle("PROVA");
         stage.setScene(scene);
         stage.show();
     }
@@ -33,7 +35,8 @@ public class EntryPoint extends Application {
      *
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         launch(args);
     }
 
