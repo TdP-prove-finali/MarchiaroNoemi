@@ -2,7 +2,6 @@ package it.polito.tdp.prova;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -50,6 +49,8 @@ public class CalcolaPercorsoController
     private TableColumn<Cassonetto, Integer> clPercentualePercorso; // Value injected by FXMLLoader
     @FXML // fx:id="cmbTipo"
     private ComboBox<String> cmbTipo; // Value injected by FXMLLoader
+    @FXML // fx:id="cmbZona"
+    private ComboBox<String> cmbZona; // Value injected by FXMLLoader
     @FXML // fx:id="pieCassonetti"
     private PieChart pieCassonetti; // Value injected by FXMLLoader
     @FXML // fx:id="pieRifiuti"
@@ -94,7 +95,6 @@ public class CalcolaPercorsoController
         RiepilogoController controller = loader.getController();
         // inserisco i dati di riepilogo nella schermata successiva
         controller.displayRiepilogo(this.riepilogo);
-        // svuoto i cassonetti del percorso accettato
         this.model.svuotaCassonettiPercorso();
         
         Model model = new Model(); 
@@ -140,15 +140,30 @@ public class CalcolaPercorsoController
     	try 
     	{
     		array = durataS.split(":");
-    		Integer ore = Integer.parseInt(array[0]);
-    		Integer minuti = Integer.parseInt(array[1]);
+    		
+    		Integer ore = 0;
+    		Integer minuti = 0;
+    		
+    		try
+    		{
+	    		ore = Integer.parseInt(array[0]);
+	    		minuti = Integer.parseInt(array[1]);
+    		}
+    		catch (NumberFormatException e)
+        	{
+    			String s1 = "ERRORE! Controlla che la durata del turno sia corretta.";
+    	    	String s2 = "Ore e minuti vanno scritti in formato numerico, separati dai due punti.";
+    	    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
+        		this.txtdurataViaggioMassima.clear();
+        		return;
+        	}
     		
     		if(ore < 0 || minuti < 0 || minuti > 59)
     		{
     			String s1 = "ERRORE! Controlla che la durata del turno sia corretta.";
     	    	String s2 = "Ore e minuti vanno scritti in formato numerico, separati dai due punti.";
     	    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
-        		this.txtCapacitaMezzo.clear();
+        		this.txtdurataViaggioMassima.clear();
         		return;
     		}
     		
@@ -174,9 +189,21 @@ public class CalcolaPercorsoController
     		
     		return;
     	}
+    	
+    	// acquisisco la zona
+    	String zona = this.cmbZona.getValue();
+    	
+    	if(zona == null)
+    	{
+    		// nessuna zona selezionata --> suggerimento
+    		
+    		this.txtSuggerimenti.setText("ERRORE! Seleziona una zona di raccolta dal menù a tendina");
+    		
+    		return;
+    	}
     
     	// calcolo il percorso ottimo
-    	List<Cassonetto> percorso = this.model.calcolaPercorso(tipo, capacita, durata);
+    	List<Cassonetto> percorso = this.model.calcolaPercorso(tipo, zona, capacita, durata);
     	
     	// riempio le tabelle Percorso e Esclusi
     	this.tblPercorso.setItems(FXCollections.observableArrayList(percorso));
@@ -271,7 +298,8 @@ public class CalcolaPercorsoController
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statoCassonetti.fxml"));
         root = loader.load();
         StatoCassonettiController controller = loader.getController();
-        Model model = new Model(); 
+        // Model model = new Model(); 
+        // voglio mantenere il model attuale --> con i cassonetti già pieni
         controller.setModel(model);
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -289,6 +317,7 @@ public class CalcolaPercorsoController
         assert clPercentualeEsclusi != null : "fx:id=\"clPercentualeEsclusi\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
         assert clPercentualePercorso != null : "fx:id=\"clPercentualePercorso\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
         assert cmbTipo != null : "fx:id=\"cmbTipo\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
+        assert cmbZona != null : "fx:id=\"cmbZona\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
         assert pieCassonetti != null : "fx:id=\"pieCassonetti\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
         assert pieRifiuti != null : "fx:id=\"pieRifiuti\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
         assert tblEsclusi != null : "fx:id=\"tblEsclusi\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
@@ -318,9 +347,11 @@ public class CalcolaPercorsoController
 		this.cmbTipo.getItems().add("plastica");
 		this.cmbTipo.getItems().add("vetro");
 		
+		this.cmbZona.getItems().addAll("1", "2", "3", "4", "5", "6", "centro");
+		
 		// suggerimenti iniziali
 		
-		String s1 = "Seleziona il tipo di rifiuto prima di procedere al calcolo del percorso.";
+		String s1 = "Seleziona il tipo di rifiuto e la zona prima di procedere al calcolo del percorso.";
 		
 		this.txtSuggerimenti.setText(s1);
 	}

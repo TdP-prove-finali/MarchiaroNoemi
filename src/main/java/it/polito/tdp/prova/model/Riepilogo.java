@@ -5,6 +5,7 @@ import java.util.List;
 public class Riepilogo 
 {
 	private String tipoRifiuto;
+	private String zona;
 	private Integer capacitaCamion; // in Litri
 	private Integer nCassonetti;
 	private Double durataPrevista; // in minuti
@@ -15,11 +16,12 @@ public class Riepilogo
 	private Luogo arrivo;
 	
 	
-	public Riepilogo(String tipoRifiuto, Integer capacitaCamion, Integer nCassonetti, Double durataPrevista,
+	public Riepilogo(String tipoRifiuto, String zona, Integer capacitaCamion, Integer nCassonetti, Double durataPrevista,
 			Luogo partenza, List<Cassonetto> percorso, Luogo discarica, Luogo arrivo) 
 	{
 		super();
 		this.tipoRifiuto = tipoRifiuto;
+		this.zona = zona;
 		this.capacitaCamion = capacitaCamion;
 		this.nCassonetti = nCassonetti;
 		this.durataPrevista = durataPrevista;
@@ -33,6 +35,11 @@ public class Riepilogo
 	public String getTipoRifiuto() 
 	{
 		return tipoRifiuto;
+	}
+	
+	public String getZona() 
+	{
+		return zona;
 	}
 
 	public Integer getCapacitaCamion() 

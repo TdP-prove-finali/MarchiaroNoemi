@@ -11,9 +11,9 @@ public class Cassonetto
 	private Integer contenuto;
 	private Integer percentuale;
 	private String tipo;
+	private String zona;
 	
-	
-	public Cassonetto(String id, LatLng posizione, String indirizzo, Integer dimensione, String tipo) 
+	public Cassonetto(String id, LatLng posizione, String indirizzo, Integer dimensione, String tipo, String zona) 
 	{
 		super();
 		this.id = id;
@@ -24,6 +24,7 @@ public class Cassonetto
 		this.contenuto = 0;
 		this.percentuale = 0;
 		this.tipo = tipo;
+		this.zona = zona;
 	}
 	
 	
@@ -61,6 +62,12 @@ public class Cassonetto
 		return tipo;
 	}
 
+	public String getZona() 
+	{
+		return zona;
+	}
+	
+	
 	
 	public void setContenuto(Integer contenuto) 
 	{
@@ -116,8 +123,8 @@ public class Cassonetto
 	@Override
 	public String toString() {
 		return String.format(
-				"Cassonetto [id=%s, posizione=%s, indirizzo=%s, dimensione=%s, contenuto=%s, percentuale=%s, tipo=%s]", id,
-				posizione, indirizzo, dimensione, contenuto, percentuale, tipo);
+				"Cassonetto [id=%s, posizione=%s, indirizzo=%s, dimensione=%s, contenuto=%s, percentuale=%s, tipo=%s, zona=%s]", id,
+				posizione, indirizzo, dimensione, contenuto, percentuale, tipo, zona);
 	}
 
 

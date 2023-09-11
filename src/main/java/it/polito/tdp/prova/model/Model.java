@@ -34,7 +34,7 @@ public class Model
 	// percorso ottimo --> memorizzo l'ultimo percorso per stamparlo nella schermata di riepilogo
 	private List<Cassonetto> percorso;
 	
-	// sede e discarica --> memorizzo ultima sede e discarica per stamparli nella schermata di riepilogo
+	// sede e discarica --> memorizzo sede e discarica per stamparli nella schermata di riepilogo
 	private Luogo sede;
 	private Luogo discarica;
 	
@@ -47,13 +47,13 @@ public class Model
 		this.cassonetti = dao.getAllCassonetti();
 	}
 	
-	private void creaGrafo(String tipo)
+	private void creaGrafo(String tipo, String zona)
 	{
 		// creo grafo
 		grafo = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
 		
 		// aggiungo vertici
-		this.vertici = this.getCassonettiBytipo(tipo);
+		this.vertici = this.getCassonettiByTipoZona(tipo, zona);
 
 		Graphs.addAllVertices(grafo, this.vertici);
 		
@@ -178,7 +178,7 @@ public class Model
 			
 			totale = totale + contenuto;
 			
-			// System.out.println(percentuale);
+			// System.out.println(Math.round(gauss*100.0)/100.0);
 		}
 		
 		return totale;
@@ -188,7 +188,7 @@ public class Model
 	 * Restituisce una lista di Cassonetti del tipo specificato alla chiamata del metodo.
 	 *  I cassonetti vengono ordinati per percentuale di riempimento decrescente.
 	 */
-	public List<Cassonetto> getCassonettiBytipo(String tipo)
+	public List<Cassonetto> getCassonettiByTipoZona(String tipo, String zona)
 	{
 		List<Cassonetto> ret = new ArrayList<Cassonetto>();
 		
@@ -196,7 +196,21 @@ public class Model
 		{
 			if(c.getTipo().compareTo(tipo) == 0)
 			{
-				ret.add(c);
+				// il tipo di rifiuto corrisponde. la zona?
+				
+				if(zona.compareTo("Asti") == 0)
+				{
+					// aggiungo tutti i cassonetti
+					ret.add(c);
+				}
+				else
+				{
+					// controllo che la zona corrisponda
+					if(c.getZona().compareTo(zona) == 0)
+					{
+						ret.add(c);
+					}
+				}
 			}
 		}
 		
@@ -205,10 +219,9 @@ public class Model
 		return ret;
 	}
 	
-	public List<Cassonetto> calcolaPercorso(String tipo, Integer capacitaMezzo, Integer durataTurno)
+	public List<Cassonetto> calcolaPercorso(String tipo, String zona, Integer capacitaMezzo, Integer durataTurno)
 	{
-		this.riempiCassonetti();
-		this.creaGrafo(tipo);
+		this.creaGrafo(tipo, zona);
 		
 		this.trovaPercorso = new TrovaPercorso(this.grafo);
 		
@@ -225,7 +238,7 @@ public class Model
 			this.discarica = dao.getDiscaricaAltro();
 		}
 		
-		this.trovaPercorso.init(tipo, capacitaMezzo, durataTurno, this.sede, this.discarica);
+		this.trovaPercorso.init(tipo, zona, capacitaMezzo, durataTurno, this.sede, this.discarica);
 		
 		this.percorso = this.trovaPercorso.getPercorso();
 		

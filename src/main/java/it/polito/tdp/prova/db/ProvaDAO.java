@@ -41,8 +41,9 @@ public class ProvaDAO {
 				String indirizzo = res.getString("indirizzo");
 				Integer dimensione = res.getInt("dimensione");
 				String tipo = res.getString("tipo");
+				String zona = res.getString("zona");
 				
-				result.add(new Cassonetto(id, coord, indirizzo, dimensione, tipo));
+				result.add(new Cassonetto(id, coord, indirizzo, dimensione, tipo, zona));
 			}
 			
 			conn.close();

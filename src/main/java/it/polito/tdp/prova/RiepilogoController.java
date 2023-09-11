@@ -4,6 +4,7 @@
 
 package it.polito.tdp.prova;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -13,11 +14,16 @@ import it.polito.tdp.prova.model.Riepilogo;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 public class RiepilogoController {
 
@@ -45,20 +51,48 @@ public class RiepilogoController {
     private TextArea txtSuggerimenti; // Value injected by FXMLLoader
     @FXML // fx:id="txtTipoRifiuto"
     private TextField txtTipoRifiuto; // Value injected by FXMLLoader
+    @FXML // fx:id="txtZona"
+    private TextField txtZona; // Value injected by FXMLLoader
 
     private Model model;
     
     
     @FXML
-    void tornaPianificaFromRiepilogo(ActionEvent event) 
+    void tornaPianificaFromRiepilogo(ActionEvent event) throws IOException 
     {
-
+    	//cambio schermata
+    	
+    	Stage stage = null;
+    	Parent root = null;
+        stage = (Stage)(((Button)event.getSource()).getScene().getWindow());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/calcolaPercorso.fxml"));
+        root = loader.load();
+        StatoCassonettiController controller = loader.getController();
+        // Model model = new Model(); 
+        // voglio mantenere il model attuale --> con i cassonetti già pieni
+        controller.setModel(model);
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    void tornaStatoFromRiepilogo(ActionEvent event) 
+    void tornaStatoFromRiepilogo(ActionEvent event) throws IOException 
     {
-
+    	//cambio schermata
+    	
+    	Stage stage = null;
+    	Parent root = null;
+        stage = (Stage)(((Button)event.getSource()).getScene().getWindow());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statoCassonetti.fxml"));
+        root = loader.load();
+        StatoCassonettiController controller = loader.getController();
+        // Model model = new Model(); 
+        // voglio mantenere il model attuale --> con i cassonetti già pieni
+        controller.setModel(model);
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
     
     public void displayRiepilogo(Riepilogo riepilogo)
@@ -93,6 +127,7 @@ public class RiepilogoController {
 
     public void setModel(Model model) 
    	{
+    	this.model = model;
    		
    		String s1 = "Viene visualizzato il riepilogo del percorso ottimo calcolato.";
    		String s2 = "Inoltre è possibile tornare alle schermate precedenti.";

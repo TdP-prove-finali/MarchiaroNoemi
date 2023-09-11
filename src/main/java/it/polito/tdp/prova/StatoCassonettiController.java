@@ -2,6 +2,7 @@ package it.polito.tdp.prova;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -38,8 +39,12 @@ public class StatoCassonettiController
     private TableColumn<Cassonetto, String> clIndirizzo; // Value injected by FXMLLoader
     @FXML // fx:id="clPercentuale"
     private TableColumn<Cassonetto, Integer> clPercentuale; // Value injected by FXMLLoader
+    @FXML // fx:id="clZona"
+    private TableColumn<Cassonetto, String> clZona; // Value injected by FXMLLoader
     @FXML // fx:id="cmbTipo"
     private ComboBox<String> cmbTipo; // Value injected by FXMLLoader
+    @FXML // fx:id="cmbZona"
+    private ComboBox<String> cmbZona; // Value injected by FXMLLoader
     @FXML // fx:id="tblCassonetti"
     private TableView<Cassonetto> tblCassonetti; // Value injected by FXMLLoader
     @FXML // fx:id="txtCassonettiN"
@@ -82,11 +87,13 @@ public class StatoCassonettiController
     	this.txtLitriTotali.clear();
     	this.txtSuggerimenti.clear();
     	this.cmbTipo.setValue(null);
+    	this.cmbZona.setValue(null);
     	this.cmbTipo.setPromptText("Seleziona tipo:");
+    	this.cmbZona.setPromptText("Seleziona zona:");
     	this.tblCassonetti.getItems().clear();
     	
     	// aggiorno suggerimenti
-    	String s1 = "Seleziona un tipo di rifiuto dal menù a tendina per visualizzare lo stato dei cassonetti.";
+    	String s1 = "Seleziona un tipo di rifiuto e una zona per visualizzare lo stato dei cassonetti.";
     	String s2 = "Inoltre è ora possibile calcolare un percorso di raccolta.";
     	
     	this.txtSuggerimenti.setText(s1 + "\n" + s2);
@@ -109,24 +116,36 @@ public class StatoCassonettiController
     		return;
     	}
     	
-    	// ho il tipo di rifiuto desiderato
+    	String zona = this.cmbZona.getValue();
+    	
+    	if(zona == null)
+    	{
+    		// nessuna zona selezionata --> suggerimento + svuota tabella
+    		
+    		this.txtSuggerimenti.setText("ERRORE! Seleziona una zona di raccolta dal menù a tendina");
+    		
+    		this.tblCassonetti.getItems().clear();
+    		
+    		return;
+    	}
+    	
+    	// ho il tipo di rifiuto desiderato e la zona di raccolta
     	// chiedo al model l'elenco di cassonetti, ordinati in modo decrescente di riempimento
+    	List<Cassonetto> cass = model.getCassonettiByTipoZona(tipo, zona);
     	// riempio la tabella
+    	this.tblCassonetti.setItems(FXCollections.observableArrayList(cass));
     	
-    	List<Cassonetto> all = model.getCassonettiBytipo(tipo);
-    	
-    	this.tblCassonetti.setItems(FXCollections.observableArrayList(all));
     	
     	// inserisco le statistiche dei cassonetti
     	
     	// numero cassonetti
-    	Integer n = all.size();
+    	Integer n = cass.size();
     	this.txtCassonettiN.setText(n.toString());
     	
     	// litri totali nei cassonetti
     	Integer tot = 0;
     	
-    	for(Cassonetto c: all)
+    	for(Cassonetto c: cass)
     	{
     		tot = tot + c.getContenuto();
     	}
@@ -134,9 +153,6 @@ public class StatoCassonettiController
     	this.txtLitriTotali.setText(tot.toString());
     	
     	// litri camion a disposizione di default
-    	Cassonetto c = all.get(0);
-    	String tipoCassonetto = c.getTipo();
-    	
     	if(tipo.compareTo("vetro") == 0)
     	{
     		this.txtLitriCamion.setText("25000");
@@ -149,7 +165,7 @@ public class StatoCassonettiController
     	}
     	
     	// aggiorno i suggerimenti
-    	String s1 = "In tabella sono presenti i cassonetti del tipo selezionato, ordinati per riempimento decrescente.";
+    	String s1 = "In tabella sono presenti i cassonetti del tipo e zona selezionati, ordinati per riempimento decrescente.";
     	String s2 = "Inoltre è possibile calcolare un percorso di raccolta.";
     	
     	this.txtSuggerimenti.setText(s1 + "\n" + s2);
@@ -160,13 +176,16 @@ public class StatoCassonettiController
     {
     	//cambio schermata
     	
+    	// non passo nulla perchè la lista dei cassonetti pieni è salvata nel model
+    	
     	Stage stage = null;
     	Parent root = null;
         stage = (Stage)(((Button)event.getSource()).getScene().getWindow());
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/calcolaPercorso.fxml"));
         root = loader.load();
         CalcolaPercorsoController controller = loader.getController();
-        Model model = new Model(); 
+        // Model model = new Model(); 
+        // voglio mantenere il model attuale
         controller.setModel(model);
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -181,7 +200,9 @@ public class StatoCassonettiController
         assert clDimensione != null : "fx:id=\"clDimensione\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
         assert clIndirizzo != null : "fx:id=\"clIndirizzo\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
         assert clPercentuale != null : "fx:id=\"clPercentuale\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
+        assert clZona != null : "fx:id=\"clZona\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
         assert cmbTipo != null : "fx:id=\"cmbTipo\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
+        assert cmbZona != null : "fx:id=\"cmbZona\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
         assert tblCassonetti != null : "fx:id=\"tblCassonetti\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
         assert txtCassonettiN != null : "fx:id=\"txtCassonettiN\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
         assert txtLitriCamion != null : "fx:id=\"txtLitriCamion\" was not injected: check your FXML file 'statoCassonetti.fxml'.";
@@ -194,6 +215,7 @@ public class StatoCassonettiController
         this.clPercentuale.setCellValueFactory(new PropertyValueFactory<Cassonetto, Integer>("percentuale"));
         this.clDimensione.setCellValueFactory(new PropertyValueFactory<Cassonetto, Integer>("dimensione"));
         this.clContenuto.setCellValueFactory(new PropertyValueFactory<Cassonetto, Integer>("contenuto"));
+        this.clZona.setCellValueFactory(new PropertyValueFactory<Cassonetto, String>("zona"));
         
     }
     
@@ -206,7 +228,9 @@ public class StatoCassonettiController
 		this.cmbTipo.getItems().add("plastica");
 		this.cmbTipo.getItems().add("vetro");
 		
-		String s1 = "Aggiorna i dati e seleziona il tipo di rifiuto per visualizzare lo stato dei cassonetti.";
+		this.cmbZona.getItems().addAll("1", "2", "3", "4", "5", "6", "centro", "Asti");
+		
+		String s1 = "Aggiorna i dati, seleziona il tipo di rifiuto e la zona per visualizzare lo stato dei cassonetti.";
 		String s2 = "Per calcolare un nuovo percorso è necessario aggiornare i dati.";
 		
 		this.txtSuggerimenti.setText(s1 + "\n" + s2);

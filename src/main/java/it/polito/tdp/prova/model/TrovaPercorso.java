@@ -19,6 +19,7 @@ public class TrovaPercorso
 	private Graph<Cassonetto, DefaultWeightedEdge> grafo;
 	// input
 	private String tipo; // carta plastica vetro indifferenziata
+	private String zona; // 1 2 3 4 5 6 centro
 	private Integer capacitaMezzo; // in Litri
 	private Integer durataTurno; // in minuti
 	private Integer durataSvuotamentoDiscarica; // in minuti
@@ -47,15 +48,16 @@ public class TrovaPercorso
 	// COSTRUTTORE
 	public TrovaPercorso(Graph<Cassonetto, DefaultWeightedEdge> grafo)
 	{
-		// grafo solo del tipo specificato
+		// grafo solo del tipo e zona specificati
 		this.grafo = grafo;
 	}
 	
 	// INIZIALIZZAZIONE
-	public void init(String tipo, Integer capacitaMezzo, Integer durataTurno, Luogo sede, Luogo discarica)
+	public void init(String tipo, String zona, Integer capacitaMezzo, Integer durataTurno, Luogo sede, Luogo discarica)
 	{
 		// input
 		this.tipo = tipo;
+		this.zona = zona;
 		this.capacitaMezzo = capacitaMezzo;
 		this.durataTurno = durataTurno;
 		
@@ -108,10 +110,10 @@ public class TrovaPercorso
 			Double effettivo = 0.0;
 			switch (this.tipo)
 			{
-				case "carta": effettivo = contenuto * (1 - this.riduzioneCarta);
-				case "indifferenziata": effettivo = contenuto * (1 - this.riduzioneIndifferenziata);
-				case "plastica": effettivo = contenuto * (1 - this.riduzionePlastica);
-				case "vetro": effettivo = contenuto * (1 - this.riduzioneVetro);
+				case "carta": effettivo = contenuto * (1 - this.riduzioneCarta); break;
+				case "indifferenziata": effettivo = contenuto * (1 - this.riduzioneIndifferenziata); break;
+				case "plastica": effettivo = contenuto * (1 - this.riduzionePlastica); break;
+				case "vetro": effettivo = contenuto * (1 - this.riduzioneVetro); break;
 			}
 			// calcolo durata viaggio
 			LatLng coord1 = primo.getPosizione();
@@ -130,7 +132,7 @@ public class TrovaPercorso
 			
 		}
 		
-		this.riepilogo = new Riepilogo(tipo, capacitaMezzo, this.percorso.size(), 
+		this.riepilogo = new Riepilogo(this.tipo, this.zona, this.capacitaMezzo, this.percorso.size(), 
 				this.durataViaggio, this.sede, this.percorso, this.discarica, this.sede);
 		
 	}
@@ -178,10 +180,10 @@ public class TrovaPercorso
 				Double effettivo = 0.0;
 				switch (this.tipo)
 				{
-					case "carta": effettivo = contenuto * (1 - this.riduzioneCarta);
-					case "indifferenziata": effettivo = contenuto * (1 - this.riduzioneIndifferenziata);
-					case "plastica": effettivo = contenuto * (1 - this.riduzionePlastica);
-					case "vetro": effettivo = contenuto * (1 - this.riduzioneVetro);
+					case "carta": effettivo = contenuto * (1 - this.riduzioneCarta); break;
+					case "indifferenziata": effettivo = contenuto * (1 - this.riduzioneIndifferenziata); break;
+					case "plastica": effettivo = contenuto * (1 - this.riduzionePlastica); break;
+					case "vetro": effettivo = contenuto * (1 - this.riduzioneVetro); break;
 				}
 				// calcolo durata viaggio
 				LatLng coord1 = ultimo.getPosizione();
