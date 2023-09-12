@@ -5,9 +5,9 @@ public class ProvaModel
 
 	public static void main(String[] args) 
 	{
-		Model model = new Model();
+		// Model model = new Model();
 		
-		// model.creaGrafo("vetro");
+		// model.creaGrafo("vetro", "1");
 
 	}
 

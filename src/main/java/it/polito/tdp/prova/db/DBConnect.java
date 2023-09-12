@@ -2,9 +2,6 @@ package it.polito.tdp.prova.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -23,7 +20,8 @@ public class DBConnect
 			HikariConfig config = new HikariConfig();
 			config.setJdbcUrl(jdbcURL);
 			config.setUsername("root");
-			config.setPassword("S4nsone1");
+			// inserire qui la propria password
+			config.setPassword("");
 			
 			// configurazione MySQL
 			config.addDataSourceProperty("cachePrepStmts", "true");
