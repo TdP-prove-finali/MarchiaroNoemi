@@ -10,6 +10,7 @@ public class Cassonetto
 	private Integer dimensione;
 	private Integer contenuto;
 	private Integer percentuale;
+	private Double effettivo; // contenuto del cassonetto "compresso" nel camion di raccolta
 	private String tipo;
 	private String zona;
 	
@@ -23,6 +24,7 @@ public class Cassonetto
 		// ogni cassonetto viene creato vuoto
 		this.contenuto = 0;
 		this.percentuale = 0;
+		this.effettivo = 0.0;
 		this.tipo = tipo;
 		this.zona = zona;
 	}
@@ -57,6 +59,11 @@ public class Cassonetto
 		return percentuale;
 	}
 	
+	public Double getEffettivo()
+	{
+		return this.effettivo;
+	}
+	
 	public String getTipo() 
 	{
 		return tipo;
@@ -78,8 +85,13 @@ public class Cassonetto
 	{
 		this.percentuale = percentuale;
 	}
-	
-	
+
+	public void setEffettivo(Double effettivo) 
+	{
+		this.effettivo = effettivo;
+	}
+
+
 
 	/**
 	 * svuota il cassonetto: 
@@ -89,6 +101,7 @@ public class Cassonetto
 	{
 		this.contenuto = 0;
 		this.percentuale = 0;
+		this.effettivo = 0.0;
 	}
 
 	@Override

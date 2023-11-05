@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.prova.AvvioController">
+   <top>
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="45.0" prefWidth="800.0" style="-fx-background-color: skyblue;" text="IoT &amp; SORTED WASTE" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+   </top>
+   <right>
+      <AnchorPane prefWidth="800.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="610.0" layoutY="52.0" mnemonicParsing="false" onAction="#avvioProgramma" style="-fx-background-color: LIGHTGREEN;" text="START">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Button>
+            <ImageView fitHeight="381.0" fitWidth="512.0" layoutX="9.0" layoutY="7.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../mappaCassonetti.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="btnVisualizzaStato" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="545.0" layoutY="254.0" mnemonicParsing="false" onAction="#goToStatoCassonetti" style="-fx-background-color: lightblue;" text="Visualizza stato cassonetti">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnPianificaPercorso" contentDisplay="CENTER" disable="true" layoutX="535.0" layoutY="309.0" mnemonicParsing="false" onAction="#goToCalcolaPercorso" style="-fx-background-color: lightblue;" text="Pianifica percorso di raccolta">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </right>
+</BorderPane>

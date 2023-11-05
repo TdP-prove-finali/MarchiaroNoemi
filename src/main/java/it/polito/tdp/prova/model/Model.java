@@ -37,6 +37,12 @@ public class Model
 	private Luogo sede;
 	private Luogo discarica;
 	
+	// costanti di riduzione contenuto cassonetto nel camion
+	private final Double riduzioneCarta = 0.15;
+	private final Double riduzionePlastica = 0.3;
+	private final Double riduzioneVetro = 0.05;
+	private final Double riduzioneIndifferenziata = 0.1;
+	
 	public Model()
 	{
 		dao = new ProvaDAO();
@@ -46,6 +52,11 @@ public class Model
 		this.cassonetti = dao.getAllCassonetti();
 	}
 	
+	/**
+	 * Crea un grafo completo dei cassonetti del tipo e zona passati come parametro
+	 * @param tipo
+	 * @param zona
+	 */
 	private void creaGrafo(String tipo, String zona)
 	{
 		// creo grafo
@@ -76,35 +87,35 @@ public class Model
 						
 						Double peso = LatLngTool.distance(c1.getPosizione(), c2.getPosizione(), LengthUnit.KILOMETER);
 					
+						/*
 						num++;
-						somm = somm + peso;
-						
+						somm = somm + peso;	
 						if(peso < min)
 							min = peso;
-						
 						if(peso > max)
 							max = peso;
+						*/
 						
 						Graphs.addEdgeWithVertices(this.grafo, c1, c2, peso);
 					}
 				}
 			}
 		}
-		
+		/*
 		// stampo numero di vertici e archi
 		String ret = String.format("Grafo creato!\n# vertici: %d\n# archi: %d", grafo.vertexSet().size(), grafo.edgeSet().size());
-	
 		System.out.println(ret);
-		
-		Double media = somm / num;
-		
-		System.out.println("Distanza media = " + media);
-		
-		System.out.println("Distanza minima = " + min);
-		
+		Double media = somm / num;		
+		System.out.println("Distanza media = " + media);		
+		System.out.println("Distanza minima = " + min);		
 		System.out.println("Distanza massima = " + max);
+		*/
 	}
 	
+	/**
+	 * 
+	 * @return numero di vertici del grafo
+	 */
 	public Integer getNumeroVertici()
 	{
 		return this.grafo.vertexSet().size();
@@ -172,8 +183,18 @@ public class Model
 			
 			Integer contenuto = (int) (dimensione*(percentuale/100.0));
 			
+			Double effettivo = 0.0;
+			switch (c.getTipo())
+			{
+				case "carta": effettivo = contenuto * (1 - this.riduzioneCarta); break;
+				case "indifferenziata": effettivo = contenuto * (1 - this.riduzioneIndifferenziata); break;
+				case "plastica": effettivo = contenuto * (1 - this.riduzionePlastica); break;
+				case "vetro": effettivo = contenuto * (1 - this.riduzioneVetro); break;
+			}
+			
 			c.setContenuto(contenuto);
 			c.setPercentuale(percentuale);
+			c.setEffettivo(effettivo);
 			
 			totale = totale + contenuto;
 			
@@ -218,6 +239,14 @@ public class Model
 		return ret;
 	}
 	
+	/**
+	 * Trova il percorso di raccolta dei rifiuti del tipo selezionato
+	 * @param tipo
+	 * @param zona
+	 * @param capacitaMezzo
+	 * @param durataTurno
+	 * @return percorso di raccolta
+	 */
 	public List<Cassonetto> calcolaPercorso(String tipo, String zona, Integer capacitaMezzo, Integer durataTurno)
 	{
 		this.creaGrafo(tipo, zona);
@@ -244,6 +273,9 @@ public class Model
 		return this.percorso;
 	}
 	
+	/**
+	 * svuota il cassonetto presente nel percorso di raccolta accettato
+	 */
 	public void svuotaCassonettiPercorso()
 	{
 		// se il cassonetto fa parte del percorso ottimo accettato, viene svuotato
@@ -257,51 +289,91 @@ public class Model
 		}
 	}
 	
+	/**
+	 * 
+	 * @return lista di cassonetti esclusa dal percorso
+	 */
 	public List<Cassonetto> getEsclusi()
 	{
 		return this.trovaPercorso.getEsclusi();
 	}
 	
+	/**
+	 * 
+	 * @return durata del percorso di raccolta, in minuti
+	 */
 	public Integer getDurataViaggio() 
 	{
 		return this.trovaPercorso.getDurataViaggio();
 	}
 
+	/**
+	 * 
+	 * @return quantità di rifiuti raccolta, in Litri 
+	 */
 	public Double getQuantitaRaccolta() 
 	{
-		return this.trovaPercorso.getQuantitaRaccolta();
+		return Math.round(this.trovaPercorso.getQuantitaRaccolta() * 100.0) / 100.0;
 	}
 	
+	/**
+	 * 
+	 * @return quantità di rifiuti non raccolta, in Litri 
+	 */
 	public Double getQuantitaNonRaccolta()
 	{
-		return this.trovaPercorso.getQuantitaNonRaccolta();
+		return Math.round(this.trovaPercorso.getQuantitaNonRaccolta() * 100.0) / 100.0;
 	}
 	
+	/**
+	 * 
+	 * @return numero di cassonetti svuotati
+	 */
 	public Integer getCassonettiSvuotati()
 	{
 		return this.trovaPercorso.getCassonettiSvuotati();
 	}
 	
+	/**
+	 * 
+	 * @return numero di cassonetti vuoti
+	 */
 	public Integer getCassonettiVuoti()
 	{
 		return this.trovaPercorso.getCassonettiVuoti();
 	}
 	
+	/**
+	 * 
+	 * @return numero di cassonetti non svuotati
+	 */
 	public Integer getCassonettiNonSvuotati()
 	{
 		return this.trovaPercorso.getCassonettiNonSvuotati();
 	}
 
+	/**
+	 * 
+	 * @return sede
+	 */
 	public Luogo getSede() 
 	{
 		return sede;
 	}
 
+	/**
+	 * 
+	 * @return discarica
+	 */
 	public Luogo getDiscarica() 
 	{
 		return discarica;
 	}
 	
+	/**
+	 * 
+	 * @return riepilogo del percorso di raccolta
+	 */
 	public Riepilogo getRiepilogo()
 	{
 		return this.trovaPercorso.getRiepilogo();

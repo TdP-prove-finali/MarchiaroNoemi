@@ -4,7 +4,8 @@ import java.util.Comparator;
 
 public class ComparatoreCassonettiPercentuale implements Comparator<Cassonetto> 
 {
-
+	// permette di ordinare i cassonetti per percentuale DECRESCENTE
+	
 	@Override
 	public int compare(Cassonetto c1, Cassonetto c2) 
 	{

@@ -60,44 +60,11 @@ public class StatoCassonettiController
     
     private Model model;
 
-    /*
-     *	Alla pressione del bottone "aggiorna dati"
-     *	vengono riempiti i cassonetti 
+
+    /**
+     * Viene visualizzato lo stato dei cassonetti (riempimento)
+     * @param event
      */
-    @FXML
-    void aggiornaDati(ActionEvent event) 
-    {
-    	// riempio i cassonetti
-    	model.riempiCassonetti();
-    	
-    	// una volta riempiti i cassonetti
-    	// abilito il bottone per visualizzare i dati
-    	// abilito il bottone per cambiare schermata a calcola percorso
-    	// (disabilitato in precedenza)
-    	
-    	this.btnVisualizzaStato.setDisable(false);
-    	this.btnCalcolaPercorso.setDisable(false);
-    	
-    	// pulisco la schermata
-    	
-    	this.txtCassonettiN.clear();
-    	this.txtLitriCamion.clear();
-    	this.txtLitriTotali.clear();
-    	this.txtSuggerimenti.clear();
-    	this.cmbTipo.setValue(null);
-    	this.cmbZona.setValue(null);
-    	this.cmbTipo.setPromptText("Seleziona tipo:");
-    	this.cmbZona.setPromptText("Seleziona zona:");
-    	this.tblCassonetti.getItems().clear();
-    	
-    	// aggiorno suggerimenti
-    	String s1 = "Seleziona un tipo di rifiuto e una zona per visualizzare lo stato dei cassonetti.";
-    	String s2 = "Inoltre è ora possibile calcolare un percorso di raccolta.";
-    	
-    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
-    }
-
-
     @FXML
     void visualizzaStato(ActionEvent event) 
     {
@@ -169,6 +136,11 @@ public class StatoCassonettiController
     	this.txtSuggerimenti.setText(s1 + "\n" + s2);
     }
 
+    /**
+     * Cambio schermata
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void goToCalcolaPercorso(ActionEvent event) throws IOException 
     {
@@ -215,6 +187,10 @@ public class StatoCassonettiController
         this.clContenuto.setCellValueFactory(new PropertyValueFactory<Cassonetto, Integer>("contenuto"));
         this.clZona.setCellValueFactory(new PropertyValueFactory<Cassonetto, String>("zona"));
         
+        String s1 = "Aggiorna i dati, seleziona il tipo di rifiuto e la zona per visualizzare lo stato dei cassonetti.";
+		String s2 = "Per calcolare un nuovo percorso è necessario aggiornare i dati.";
+		
+		this.txtSuggerimenti.setText(s1 + "\n" + s2);
     }
     
     public void setModel(Model model) 
@@ -228,10 +204,6 @@ public class StatoCassonettiController
 		
 		this.cmbZona.getItems().addAll("1", "2", "3", "4", "5", "6", "centro", "Asti");
 		
-		String s1 = "Aggiorna i dati, seleziona il tipo di rifiuto e la zona per visualizzare lo stato dei cassonetti.";
-		String s2 = "Per calcolare un nuovo percorso è necessario aggiornare i dati.";
-		
-		this.txtSuggerimenti.setText(s1 + "\n" + s2);
 	}
 
 }

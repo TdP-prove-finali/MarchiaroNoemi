@@ -76,12 +76,18 @@ public class CalcolaPercorsoController
     @FXML // fx:id="txtSuggerimenti"
     private TextArea txtSuggerimenti; // Value injected by FXMLLoader
     @FXML // fx:id="txtdurataViaggioMassima"
-    private TextField txtdurataViaggioMassima; // Value injected by FXMLLoader
+    private TextField txtDurataViaggioMassima; // Value injected by FXMLLoader
     
     private Model model;
     
     private Riepilogo riepilogo;
 
+    /**
+     * Accettando il percorso viene cambiata la schermata e
+     * i cassonetti di tale percorso vengono svuotati
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void accettaPercorso(ActionEvent event) throws IOException 
     {
@@ -97,19 +103,24 @@ public class CalcolaPercorsoController
         controller.displayRiepilogo(this.riepilogo);
         this.model.svuotaCassonettiPercorso();
         
-        Model model = new Model(); 
+        //Model model = new Model(); 
         controller.setModel(model);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
+    /**
+     * Viene calcolato il percorso di raccolta 
+     * @param event
+     */
     @FXML
     void calcolaPercorso(ActionEvent event) 
     {
     	// acquisisco i dati capacità mezzo e durata turno
     	String capacitaS = this.txtCapacitaMezzo.getText();
-    	String durataS = this.txtdurataViaggioMassima.getText();
+    	String durataS = this.txtDurataViaggioMassima.getText();
+    	
     	// controllo che la capacità del mezzo sia un numero intero 'ragionevole'
     	Integer capacita;
     	try
@@ -122,6 +133,7 @@ public class CalcolaPercorsoController
     	    	String s2 = "La capacità è espressa in Litri e non in metri cubi.";
     	    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
         		this.txtCapacitaMezzo.clear();
+        		this.txtSuggerimenti.requestFocus();
         		return;
     		}
     	}
@@ -154,7 +166,7 @@ public class CalcolaPercorsoController
     			String s1 = "ERRORE! Controlla che la durata del turno sia corretta.";
     	    	String s2 = "Ore e minuti vanno scritti in formato numerico, separati dai due punti.";
     	    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
-        		this.txtdurataViaggioMassima.clear();
+        		this.txtDurataViaggioMassima.clear();
         		return;
         	}
     		
@@ -163,7 +175,7 @@ public class CalcolaPercorsoController
     			String s1 = "ERRORE! Controlla che la durata del turno sia corretta.";
     	    	String s2 = "Ore e minuti vanno scritti in formato numerico, separati dai due punti.";
     	    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
-        		this.txtdurataViaggioMassima.clear();
+        		this.txtDurataViaggioMassima.clear();
         		return;
     		}
     		
@@ -174,7 +186,7 @@ public class CalcolaPercorsoController
     		String s1 = "ERRORE! La durata del turno deve essere inserita nel formato h:m";
 	    	String s2 = "Ore e minuti vanno scritti in formato numerico, separati dai due punti.";
 	    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
-    		this.txtdurataViaggioMassima.clear();
+    		this.txtDurataViaggioMassima.clear();
     		return;
     	}
     	
@@ -205,68 +217,90 @@ public class CalcolaPercorsoController
     	// calcolo il percorso ottimo
     	List<Cassonetto> percorso = this.model.calcolaPercorso(tipo, zona, capacita, durata);
     	
-    	// riempio le tabelle Percorso e Esclusi
-    	this.tblPercorso.setItems(FXCollections.observableArrayList(percorso));
-    	this.tblEsclusi.setItems(FXCollections.observableArrayList(model.getEsclusi()));
+    	// se il percorso esiste --> size diversa da zero
+    	if(percorso.size() != 0)
+    	{
+    		// riempio le tabelle Percorso e Esclusi
+        	this.tblPercorso.setItems(FXCollections.observableArrayList(percorso));
+        	this.tblEsclusi.setItems(FXCollections.observableArrayList(model.getEsclusi()));
+        	
+        	// riempio le caselle di testo con le statistiche
+        	this.txtCassonettiSvuotatiN.setText(this.model.getCassonettiSvuotati().toString());
+        	this.txtCassonettiNonSvuotatiN.setText(this.model.getCassonettiNonSvuotati().toString());
+        	this.txtCassonettiVuotiN.setText(this.model.getCassonettiVuoti().toString());
+        	this.txtQuantitaRaccolta.setText(this.model.getQuantitaRaccolta().toString());
+        	this.txtQuantitaNonRaccolta.setText(this.model.getQuantitaNonRaccolta().toString());
+        	this.txtDurataEffettivaViaggio.setText(this.model.getDurataViaggio().toString());
+        	
+        	// creo i grafici
+        	ObservableList<PieChart.Data> datiCassonetti = FXCollections.observableArrayList(
+                    new PieChart.Data("Cassonetti svuotati", this.model.getCassonettiSvuotati()),
+                    new PieChart.Data("Cassonetti non svuotati", this.model.getCassonettiNonSvuotati()),
+                    new PieChart.Data("Cassonetti vuoti", this.model.getCassonettiVuoti()));
+        	this.pieCassonetti.setData(datiCassonetti);
+        	this.pieCassonetti.setClockwise(true); 
+        	this.pieCassonetti.setLabelsVisible(true);
+        	this.pieCassonetti.setStartAngle(180);     
+        	this.pieCassonetti.setLegendVisible(true); 
+        	this.pieCassonetti.setVisible(true);
+        	this.pieCassonetti.setLabelLineLength(10);
+        	this.pieCassonetti.setLegendSide(Side.BOTTOM);
+        	
+        	ObservableList<PieChart.Data> datiRifiuti = FXCollections.observableArrayList(
+                    new PieChart.Data("Quantità raccolta", this.model.getQuantitaRaccolta()),
+                    new PieChart.Data("Quantità non raccolta", this.model.getQuantitaNonRaccolta()));
+        	this.pieRifiuti.setData(datiRifiuti);
+        	this.pieRifiuti.setClockwise(true); 
+        	this.pieRifiuti.setLabelsVisible(true);
+        	this.pieRifiuti.setStartAngle(180);     
+        	this.pieRifiuti.setLegendVisible(true); 
+        	this.pieRifiuti.setVisible(true);
+        	this.pieRifiuti.setLabelLineLength(10);
+        	this.pieRifiuti.setLegendSide(Side.BOTTOM);
+        	
+        	// chiedo al model il riepilogo
+        	this.riepilogo = model.getRiepilogo();
+        	
+        	// aggiorno i suggerimenti
+        	String s1 = "Viene visualizzato il percorso ottimo con le relative statistiche.";
+        	String s2 = "Si può accettare il percorso consigliato, calcolare un nuovo percorso con parametri diversi o tornare alla schermata iniziale.";
+        	
+        	// rendo editabile il button per accettare il percorso
+        	this.btnAccettaPercorso.setDisable(false);
+        	
+        	this.txtSuggerimenti.setText(s1 + "\n" + s2);
+    	}
+    	else
+    	{
+    		// tutti i cassonetti sono gia vuoti --> messaggio di errore nei suggerimenti
+        	String s1 = "Tutti i cassonetti del tipo e della zona selezionata sono vuoti.";
+        	String s2 = "Selezionare dunque un altro tipo di rifiuto o un'altra zona.";
+        	
+        	this.txtSuggerimenti.setText(s1 + "\n" + s2);
+    	}
     	
-    	// riempio le caselle di testo con le statistiche
-    	this.txtCassonettiSvuotatiN.setText(this.model.getCassonettiSvuotati().toString());
-    	this.txtCassonettiNonSvuotatiN.setText(this.model.getCassonettiNonSvuotati().toString());
-    	this.txtCassonettiVuotiN.setText(this.model.getCassonettiVuoti().toString());
-    	this.txtQuantitaRaccolta.setText(this.model.getQuantitaRaccolta().toString());
-    	this.txtQuantitaNonRaccolta.setText(this.model.getQuantitaNonRaccolta().toString());
     	
-    	// creo i grafici
-    	ObservableList<PieChart.Data> datiCassonetti = FXCollections.observableArrayList(
-                new PieChart.Data("Cassonetti svuotati", this.model.getCassonettiSvuotati()),
-                new PieChart.Data("Cassonetti non svuotati", this.model.getCassonettiNonSvuotati()),
-                new PieChart.Data("Cassonetti vuoti", this.model.getCassonettiVuoti()));
-    	this.pieCassonetti.setData(datiCassonetti);
-    	this.pieCassonetti.setClockwise(true); 
-    	this.pieCassonetti.setLabelsVisible(true);
-    	this.pieCassonetti.setStartAngle(0);     
-    	this.pieCassonetti.setLegendVisible(true); 
-    	this.pieCassonetti.setVisible(true);
-    	this.pieCassonetti.setLabelLineLength(10);
-    	this.pieCassonetti.setLegendSide(Side.BOTTOM);
-    	
-    	ObservableList<PieChart.Data> datiRifiuti = FXCollections.observableArrayList(
-                new PieChart.Data("Quantità raccolta", this.model.getQuantitaRaccolta()),
-                new PieChart.Data("Quantità non raccolta", this.model.getQuantitaNonRaccolta()));
-    	this.pieRifiuti.setData(datiRifiuti);
-    	this.pieRifiuti.setClockwise(true); 
-    	this.pieRifiuti.setLabelsVisible(true);
-    	this.pieRifiuti.setStartAngle(0);     
-    	this.pieRifiuti.setLegendVisible(true); 
-    	this.pieRifiuti.setVisible(true);
-    	this.pieRifiuti.setLabelLineLength(10);
-    	this.pieRifiuti.setLegendSide(Side.BOTTOM);
-    	
-    	// chiedo al model il riepilogo
-    	this.riepilogo = model.getRiepilogo();
-    	
-    	// aggiorno i suggerimenti
-    	String s1 = "Viene visualizzato il percorso ottimo con le relative statistiche.";
-    	String s2 = "Si può accettare il percorso consigliato, calcolare un nuovo percorso con parametri diversi o tornare alla schermata iniziale.";
-    	
-    	this.txtSuggerimenti.setText(s1 + "\n" + s2);
     }
 
+    /**
+     * Quandi si cambia il tipo di rifiuto, 
+     * automaticamente viene cambiata la capacità "standard" del mezzo di raccolta
+     * @param event
+     */
     @FXML
     void changeTipoChangeCapacitaMezzo(ActionEvent event) 
     {
     	// rendo editabili le due caselle di testo su capacità mezzo e durata turno
     	this.txtCapacitaMezzo.setDisable(false);
-    	this.txtdurataViaggioMassima.setDisable(false);
+    	this.txtDurataViaggioMassima.setDisable(false);
     	
     	// rendo cliccabile il bottone per calcolare il percorso
     	this.btnCalcola.setDisable(false);
     	
     	// aggiungo la durata del turno di default
-    	this.txtdurataViaggioMassima.setText("6:20");
+    	this.txtDurataViaggioMassima.setText("6:20");
     	
     	// aggiungo la capacità del mezzo in base al tipo di rifiuto selezionato
-    	
     	String tipo = this.cmbTipo.getValue();
     	
     	if(tipo.compareTo("vetro") == 0)
@@ -287,6 +321,12 @@ public class CalcolaPercorsoController
     	this.txtSuggerimenti.setText(s1 + "\n" + s2);
     }
 
+    /**
+     * metodo che permette di cambiare schermata
+     * @param event
+     * @throws IOException
+     */
+    
     @FXML
     void indietroToStato(ActionEvent event) throws IOException 
     {
@@ -298,6 +338,7 @@ public class CalcolaPercorsoController
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statoCassonetti.fxml"));
         root = loader.load();
         StatoCassonettiController controller = loader.getController();
+        
         // Model model = new Model(); 
         // voglio mantenere il model attuale --> con i cassonetti già pieni
         controller.setModel(model);
@@ -330,7 +371,7 @@ public class CalcolaPercorsoController
         assert txtQuantitaNonRaccolta != null : "fx:id=\"txtQuantitaNonRaccolta\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
         assert txtQuantitaRaccolta != null : "fx:id=\"txtQuantitaRaccolta\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
         assert txtSuggerimenti != null : "fx:id=\"txtSuggerimenti\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
-        assert txtdurataViaggioMassima != null : "fx:id=\"txtdurataViaggioMassima\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
+        assert txtDurataViaggioMassima != null : "fx:id=\"txtDurataViaggioMassima\" was not injected: check your FXML file 'calcolaPercorso.fxml'.";
 
         this.clIndirizzoPercorso.setCellValueFactory(new PropertyValueFactory<Cassonetto, String>("indirizzo"));
         this.clPercentualePercorso.setCellValueFactory(new PropertyValueFactory<Cassonetto, Integer>("percentuale"));
@@ -349,8 +390,7 @@ public class CalcolaPercorsoController
 		
 		this.cmbZona.getItems().addAll("1", "2", "3", "4", "5", "6", "centro");
 		
-		// suggerimenti iniziali
-		
+		// suggerimenti iniziali	
 		String s1 = "Seleziona il tipo di rifiuto e la zona prima di procedere al calcolo del percorso.";
 		
 		this.txtSuggerimenti.setText(s1);

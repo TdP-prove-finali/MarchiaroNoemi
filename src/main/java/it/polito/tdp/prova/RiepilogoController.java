@@ -56,7 +56,11 @@ public class RiepilogoController {
 
     private Model model;
     
-    
+    /**
+     * Cambio schermata
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void tornaPianificaFromRiepilogo(ActionEvent event) throws IOException 
     {
@@ -67,7 +71,7 @@ public class RiepilogoController {
         stage = (Stage)(((Button)event.getSource()).getScene().getWindow());
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/calcolaPercorso.fxml"));
         root = loader.load();
-        StatoCassonettiController controller = loader.getController();
+        CalcolaPercorsoController controller = loader.getController();
         // Model model = new Model(); 
         // voglio mantenere il model attuale --> con i cassonetti già pieni
         controller.setModel(model);
@@ -76,6 +80,11 @@ public class RiepilogoController {
         stage.show();
     }
 
+    /**
+     * cambio schermata
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void tornaStatoFromRiepilogo(ActionEvent event) throws IOException 
     {
@@ -95,9 +104,14 @@ public class RiepilogoController {
         stage.show();
     }
     
+    /**
+     * Vengono visualizzate le statistiche del percorso di raccolta accettato
+     * @param riepilogo
+     */
     public void displayRiepilogo(Riepilogo riepilogo)
     {
     	this.txtTipoRifiuto.setText(riepilogo.getTipoRifiuto());
+    	this.txtZona.setText(riepilogo.getZona());
     	this.txtCapacitaCamion.setText(riepilogo.getCapacitaCamion().toString());
     	this.txtCassonettiDaSvuotareN.setText(riepilogo.getnCassonetti().toString());
     	this.txtDurataPrevista.setText(riepilogo.getDurataPrevista().toString());
