@@ -1,7 +1,6 @@
 package it.polito.tdp.SortedWaste.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -124,7 +123,7 @@ public class TrovaPercorso
 				
 				
 				// lancio la ricorsione
-				cercaNN(parziale, 
+				cercaNearestNeighbors(parziale, 
 						durata + durataViaggio + this.durataSvuotamentoCassonetto + viaggioDiscarica + 
 						this.durataSvuotamentoDiscarica + viaggioSede, 
 						quantita + effettivo);
@@ -148,187 +147,7 @@ public class TrovaPercorso
 	
 	
 	// METODI
-	private void cerca(List<Cassonetto> parziale, Double durata, Double quantita) 
-	{
-		// condizioni di terminazione
-		
-		// il percorso è valido?
-		// limite ore non superato
-		// limite carico non superato
-		if(durata > this.durataTurno ||
-				quantita > this.capacitaMezzo)
-		{
-			// il percorso non è accettabile
-			return;
-		}
-		
-		// qui il percorso è valido
-		// se è la soluzione migliore
-		if( quantita >= this.quantitaRaccolta)	// durata <= this.durataViaggio &&
-		{
-			this.percorso = new LinkedList<Cassonetto>(parziale);
-			this.durataViaggio = durata;
-			this.quantitaRaccolta = quantita;
-			// vado avanti su questo ramo
-		}
-		
-		
-		
-		// passo ricorsivo
-		Cassonetto ultimo = parziale.get(parziale.size()-1);
-		
-		// IDEA 1
-		// cerco il percorso ottimo --> provo TUTTI i possibili percorsi
-		// n! possibili percorsi --> troppo pesante dal punto di vista computazionale
-		
-		// scorro i vicini dell'ultimo inserito e provo tutte le varie "strade"
-		
-		/*
-		for(Cassonetto vicino: Graphs.neighborListOf(grafo, ultimo))
-		{
-			if(!parziale.contains(vicino))
-			{
-				// aggiungo
-				parziale.add(vicino);
-				// calcolo quantita raccolta --> contenuto del cassonetto "compresso" nel camion --> costanti di riduzione
-				Double effettivo = vicino.getEffettivo();
-				
-				// calcolo durata viaggio tra ultimo e vicino
-				Double distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(vicino, ultimo));
-				Integer durataViaggio = (int) (distanza / this.velocitaCamion * 60); // velocità in km/h --> durata in minuti
-				
-				
-				// proseguendo su questo ramo, aggiungo un altro cassonetto
-				// questo avrà una diversa distanza dalla discarica rispetto all'ultimo inserito
-				// --> lanciando la ricorsione devo:
-				// rimuovere dalla durata il tempo di viaggio dall'ultimo cassonetto alla discarica
-				// aggiungere alla durata il tempo di viaggio dal nuovo cassonetto alla discarica
-				// NON aggiungere il tempo di svuotamento del cassonetto in discarica
-				// NON aggiungere il tempo di viaggio dalla discarica alla sede
-				// questi ultimi due tempi sono già stati inseriti nella durata all'inizio della ricorsione
-				// in quanto restano invariabili, a prescindere dall'ultimo cassonetto inserito nel percorso
-				
-				// viaggio verso la discarica di VICINO
-				Double distanzaDiscaricaPlus = LatLngTool.distance(
-						vicino.getPosizione(), this.discarica.getPosizione(), LengthUnit.KILOMETER);
-				Integer viaggioDiscaricaPlus = (int) (distanzaDiscaricaPlus / this.velocitaCamion * 60);
-				
-				// viaggio verso la discarica di ULTIMO 
-				Double distanzaDiscaricaMinus = LatLngTool.distance(
-						ultimo.getPosizione(), this.discarica.getPosizione(), LengthUnit.KILOMETER);
-				Integer viaggioDiscaricaMinus = (int) (distanzaDiscaricaMinus / this.velocitaCamion * 60);
-				
-				// lancio la ricorsione
-				cerca(parziale, 
-						durata + durataViaggio + this.durataSvuotamentoCassonetto 
-						+ viaggioDiscaricaPlus
-						- viaggioDiscaricaMinus, 
-						quantita + effettivo);
-				
-				// backtracking
-				// rimuovo l'ultimo cassonetto
-				parziale.remove(parziale.size()-1);
-			}
-		}
-		*/
-		
-		
-		// IDEA 2
-		// algoritmo euristico --> approssimato
-		// proseguo il percorso in uno dei "vicini più vicini"
-		// scelgo N vicini più vicini
-		// X = numero di vertici del grafo pieni --> cassonetti da svuotare
-		// N = Math.ceil(X/3)
-		
-		List<Cassonetto> allVicini = Graphs.neighborListOf(grafo, ultimo);
-		
-		List<Cassonetto> viciniPiuVicini = new LinkedList<Cassonetto>();
-		
-		List<VicinoDistanza> viciniDistanze = new LinkedList<VicinoDistanza>();
-		
-		for(Cassonetto vicino: allVicini)
-		{
-			// NON aggiungo alla lista dei vicini più vicini:
-			// - i cassonetti vuoti
-			// - i cassonetti che fanno già parte del percorso
-			
-			if(vicino.getContenuto() != 0 && !parziale.contains(vicino))
-			{
-				// la lista dei viciniPieni va ordinata per distanza crescente
-				// creo una classe di appoggio VicinoDistanza
-				// per ogni cassonetto vicino vuoto, creo un'istanza di tale classe
-				// creo una lista di questi oggetti e la ordino per distanza decrescente
-				
-				Double distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(vicino, ultimo));
-				
-				VicinoDistanza x = new VicinoDistanza(vicino, distanza);
-				
-				viciniDistanze.add(x);
-			}
-		}
-		
-		Collections.sort(viciniDistanze, new ComparatoreVicinoDistanza());
-		
-		Integer nViciniPieni = viciniDistanze.size();
-		
-		// scorro i vicini più vicini dell'ultimo inserito e provo le varie "strade"
-		// --> lancio la ricorsione
-		
-		for(int i = 0; i < Math.ceil(nViciniPieni/10); i++)
-		{
-			viciniPiuVicini.add(viciniDistanze.get(i).getVicino());
-		}
-		
-		for(Cassonetto vicino: viciniPiuVicini)
-		{
-			if(!parziale.contains(vicino))
-			{
-				// aggiungo
-				parziale.add(vicino);
-				// calcolo quantita raccolta --> contenuto del cassonetto "compresso" nel camion --> costanti di riduzione
-				Double effettivo = vicino.getEffettivo();
-				
-				// calcolo durata viaggio tra ultimo e vicino
-				Double distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(vicino, ultimo));
-				Integer durataViaggio = (int) (distanza / this.velocitaCamion * 60); // velocità in km/h --> durata in minuti
-				
-				
-				// proseguendo su questo ramo, aggiungo un altro cassonetto
-				// questo avrà una diversa distanza dalla discarica rispetto all'ultimo inserito
-				// --> lanciando la ricorsione devo:
-				// rimuovere dalla durata il tempo di viaggio dall'ultimo cassonetto alla discarica
-				// aggiungere alla durata il tempo di viaggio dal nuovo cassonetto alla discarica
-				// NON aggiungere il tempo di svuotamento del cassonetto in discarica
-				// NON aggiungere il tempo di viaggio dalla discarica alla sede
-				// questi ultimi due tempi sono già stati inseriti nella durata all'inizio della ricorsione
-				// in quanto restano invariabili, a prescindere dall'ultimo cassonetto inserito nel percorso
-				
-				// viaggio verso la discarica di VICINO
-				Double distanzaDiscaricaPlus = LatLngTool.distance(
-						vicino.getPosizione(), this.discarica.getPosizione(), LengthUnit.KILOMETER);
-				Integer viaggioDiscaricaPlus = (int) (distanzaDiscaricaPlus / this.velocitaCamion * 60);
-				
-				// viaggio verso la discarica di ULTIMO 
-				Double distanzaDiscaricaMinus = LatLngTool.distance(
-						ultimo.getPosizione(), this.discarica.getPosizione(), LengthUnit.KILOMETER);
-				Integer viaggioDiscaricaMinus = (int) (distanzaDiscaricaMinus / this.velocitaCamion * 60);
-				
-				// lancio la ricorsione
-				cerca(parziale, 
-						durata + durataViaggio + this.durataSvuotamentoCassonetto 
-						+ viaggioDiscaricaPlus
-						- viaggioDiscaricaMinus, 
-						quantita + effettivo);
-				
-				// backtracking
-				// rimuovo l'ultimo cassonetto
-				parziale.remove(parziale.size()-1);
-			}
-		}
-	}
-
-	
-	private void cercaNN(List<Cassonetto> parziale, Double durata, Double quantita) 
+	private void cercaNearestNeighbors(List<Cassonetto> parziale, Double durata, Double quantita) 
 	{
 		// condizioni di terminazione
 		
@@ -356,7 +175,7 @@ public class TrovaPercorso
 		// passo ricorsivo
 		Cassonetto ultimo = parziale.get(parziale.size()-1);
 		
-		// IDEA 3
+		
 		// ALGORITMO NEAREST NEIGHBOR
 		// algoritmo euristico --> approssimato
 		// proseguo il percorso nel "vicino più vicino" non ancora svuotato
@@ -419,7 +238,7 @@ public class TrovaPercorso
 		Integer viaggioDiscaricaMinus = (int) (distanzaDiscaricaMinus / this.velocitaCamion * 60);
 		
 		// lancio la ricorsione
-		cercaNN(parziale, 
+		cercaNearestNeighbors(parziale, 
 				durata + durataViaggio + this.durataSvuotamentoCassonetto 
 				+ viaggioDiscaricaPlus
 				- viaggioDiscaricaMinus, 
@@ -499,4 +318,5 @@ public class TrovaPercorso
 	{
 		return this.riepilogo;
 	}
+	
 }
