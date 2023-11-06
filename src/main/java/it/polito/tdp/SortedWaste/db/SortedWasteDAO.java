@@ -1,4 +1,4 @@
-package it.polito.tdp.prova.db;
+package it.polito.tdp.SortedWaste.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,10 +9,10 @@ import java.util.List;
 
 import com.javadocmd.simplelatlng.LatLng;
 
-import it.polito.tdp.prova.model.Cassonetto;
-import it.polito.tdp.prova.model.Luogo;
+import it.polito.tdp.SortedWaste.model.Cassonetto;
+import it.polito.tdp.SortedWaste.model.Luogo;
 
-public class ProvaDAO {
+public class SortedWasteDAO {
 	
 	/**
 	 * 

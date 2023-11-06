@@ -1,10 +1,10 @@
-package it.polito.tdp.prova.db;
+package it.polito.tdp.SortedWaste.db;
 
 public class TestDao {
 
 	public static void main(String[] args) 
 	{
-		ProvaDAO dao = new ProvaDAO();
+		SortedWasteDAO dao = new SortedWasteDAO();
 		
 		System.out.println(dao.getDiscaricaAltro().toString());
 	}

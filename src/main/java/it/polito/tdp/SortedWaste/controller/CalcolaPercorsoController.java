@@ -1,13 +1,13 @@
-package it.polito.tdp.prova;
+package it.polito.tdp.SortedWaste.controller;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import it.polito.tdp.prova.model.Cassonetto;
-import it.polito.tdp.prova.model.Model;
-import it.polito.tdp.prova.model.Riepilogo;
+import it.polito.tdp.SortedWaste.model.Cassonetto;
+import it.polito.tdp.SortedWaste.model.Model;
+import it.polito.tdp.SortedWaste.model.Riepilogo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

@@ -1,6 +1,7 @@
-package it.polito.tdp.prova;
+package it.polito.tdp.SortedWaste;
 
-import it.polito.tdp.prova.model.Model;
+import it.polito.tdp.SortedWaste.controller.AvvioController;
+import it.polito.tdp.SortedWaste.model.Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

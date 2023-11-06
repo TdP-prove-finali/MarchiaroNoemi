@@ -1,4 +1,4 @@
-package it.polito.tdp.prova.db;
+package it.polito.tdp.SortedWaste.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;

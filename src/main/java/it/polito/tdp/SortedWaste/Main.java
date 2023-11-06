@@ -1,4 +1,4 @@
-package it.polito.tdp.prova;
+package it.polito.tdp.SortedWaste;
 
 public class Main 
 {

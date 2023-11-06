@@ -2,15 +2,15 @@
  * Sample Skeleton for 'riepilogo.fxml' Controller Class
  */
 
-package it.polito.tdp.prova;
+package it.polito.tdp.SortedWaste.controller;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import it.polito.tdp.prova.model.Cassonetto;
-import it.polito.tdp.prova.model.Model;
-import it.polito.tdp.prova.model.Riepilogo;
+import it.polito.tdp.SortedWaste.model.Cassonetto;
+import it.polito.tdp.SortedWaste.model.Model;
+import it.polito.tdp.SortedWaste.model.Riepilogo;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

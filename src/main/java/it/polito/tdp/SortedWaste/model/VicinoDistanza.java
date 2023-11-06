@@ -1,4 +1,4 @@
-package it.polito.tdp.prova.model;
+package it.polito.tdp.SortedWaste.model;
 
 public class VicinoDistanza 
 {

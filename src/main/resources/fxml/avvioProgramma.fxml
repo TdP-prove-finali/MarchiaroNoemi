@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.prova.AvvioController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.SortedWaste.controller.AvvioController">
    <top>
       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="45.0" prefWidth="800.0" style="-fx-background-color: skyblue;" text="IoT &amp; SORTED WASTE" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>

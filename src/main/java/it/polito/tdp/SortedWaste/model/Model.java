@@ -1,4 +1,4 @@
-package it.polito.tdp.prova.model;
+package it.polito.tdp.SortedWaste.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,11 +13,11 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
-import it.polito.tdp.prova.db.ProvaDAO;
+import it.polito.tdp.SortedWaste.db.SortedWasteDAO;
 
 public class Model 
 {
-	private ProvaDAO dao;
+	private SortedWasteDAO dao;
 	
 	// liste di cassonetti, una dei vertici del grafo (solo un tipo di rifiuto) e una globale
 	private List<Cassonetto> vertici;
@@ -45,7 +45,7 @@ public class Model
 	
 	public Model()
 	{
-		dao = new ProvaDAO();
+		dao = new SortedWasteDAO();
 
 		// all'avvio del programma, recupero dal database tutti i cassonetti e le loro informazioni
 		// che resteranno invariate durante l'utilizzo dell'applicativo
@@ -67,10 +67,12 @@ public class Model
 
 		Graphs.addAllVertices(grafo, this.vertici);
 		
+		/*
 		Integer num = 0;
 		Double somm = 0.0;
 		Double max = Double.MIN_VALUE;
 		Double min = Double.MAX_VALUE;
+		*/
 		
 		// aggiungo archi
 		for(Cassonetto c1: this.vertici)

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.prova.StatoCassonettiController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.SortedWaste.controller.StatoCassonettiController">
    <top>
       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="45.0" prefWidth="800.0" style="-fx-background-color: skyblue;" text="STATO CASSONETTI" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>
