@@ -123,7 +123,7 @@ public class TrovaPercorso
 				
 				
 				// lancio la ricorsione
-				cercaNearestNeighbors(parziale, 
+				cercaNearestNeighbor(parziale, 
 						durata + durataViaggio + this.durataSvuotamentoCassonetto + viaggioDiscarica + 
 						this.durataSvuotamentoDiscarica + viaggioSede, 
 						quantita + effettivo);
@@ -147,7 +147,7 @@ public class TrovaPercorso
 	
 	
 	// METODI
-	private void cercaNearestNeighbors(List<Cassonetto> parziale, Double durata, Double quantita) 
+	private void cercaNearestNeighbor(List<Cassonetto> parziale, Double durata, Double quantita) 
 	{
 		// condizioni di terminazione
 		
@@ -180,7 +180,7 @@ public class TrovaPercorso
 		// algoritmo euristico --> approssimato
 		// proseguo il percorso nel "vicino più vicino" non ancora svuotato
 		
-		// trovo il vicino più vicino 
+		// trovo il vicino più vicino che:
 		// NON deve far già parte del percorso
 		// NON deve essere vuoto
 		
@@ -238,7 +238,7 @@ public class TrovaPercorso
 		Integer viaggioDiscaricaMinus = (int) (distanzaDiscaricaMinus / this.velocitaCamion * 60);
 		
 		// lancio la ricorsione
-		cercaNearestNeighbors(parziale, 
+		cercaNearestNeighbor(parziale, 
 				durata + durataViaggio + this.durataSvuotamentoCassonetto 
 				+ viaggioDiscaricaPlus
 				- viaggioDiscaricaMinus, 

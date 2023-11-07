@@ -126,12 +126,9 @@ public class Model
 	/**
 	 * Riempie tutti i cassonetti in modo pseudocasuale, con una bistribuzione Gaussiana
 	 */
-	public Double riempiCassonetti()
+	public void riempiCassonetti()
 	{
-		Double totale = 0.0;
-		
-		// all'inizio tutti i cassonetti sono vuoti
-		// scorro la lista e li riempio
+		// all'inizio tutti i cassonetti sono vuoti --> scorro la lista e li riempio
 		for(Cassonetto c: this.cassonetti)
 		{
 			Integer dimensione = c.getDimensione();
@@ -146,35 +143,30 @@ public class Model
 			if(gauss < -2)
 			{
 				// riempimento casuale tra 0% <= x < 2% 
-
 				Random rand = new Random();
 				percentuale = rand.nextInt(2);
 			}
 			else if(gauss < -1)
 			{
 				// riempimento casuale tra 2% <= x < 16% 
-
 				Random rand = new Random();
 				percentuale = rand.nextInt(14) + 2;
 			}
 			else if(gauss < 1)
 			{
 				// riempimento casuale tra 16% <= x < 84% 
-
 				Random rand = new Random();
 				percentuale = rand.nextInt(68) + 16;
 			}
 			else if(gauss < 2)
 			{
 				// riempimento casuale tra 84% <= x < 98% 
-
 				Random rand = new Random();
 				percentuale = rand.nextInt(14) + 84;
 			}
 			else	// gauss >= 2
 			{
 				// riempimento casuale tra 98% <= x <= 100% 
-
 				Random rand = new Random();
 				percentuale = rand.nextInt(3) + 98;
 			}
@@ -197,18 +189,15 @@ public class Model
 			c.setContenuto(contenuto);
 			c.setPercentuale(percentuale);
 			c.setEffettivo(effettivo);
-			
-			totale = totale + contenuto;
-			
-			// System.out.println(Math.round(gauss*100.0)/100.0);
 		}
-		
-		return totale;
 	}
 	
 	/**
-	 * Restituisce una lista di Cassonetti del tipo specificato alla chiamata del metodo.
-	 *  I cassonetti vengono ordinati per percentuale di riempimento decrescente.
+	 * Restituisce una lista di Cassonetti del tipo e della zona specificati alla chiamata del metodo.
+	 * I cassonetti vengono ordinati per percentuale di riempimento decrescente.
+	 * @param tipo
+	 * @param zona
+	 * @return lista di cassonetti
 	 */
 	public List<Cassonetto> getCassonettiByTipoZona(String tipo, String zona)
 	{
@@ -242,7 +231,7 @@ public class Model
 	}
 	
 	/**
-	 * Trova il percorso di raccolta dei rifiuti del tipo selezionato
+	 * Trova il percorso di raccolta dei rifiuti del tipo e della zona selezionati
 	 * @param tipo
 	 * @param zona
 	 * @param capacitaMezzo
