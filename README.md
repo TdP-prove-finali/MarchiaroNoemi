@@ -8,7 +8,7 @@
 4. Inserire la password del DBMS utilizzato nel campo `setPassword` all'interno della classe `DBConnect`.
 5. Eseguire la classe `Main` per avviare l'applicazione.
 
-Video dimostrativo sull'uso dell'applicazione disponibile al link: [https://youtu.be/wRPsn2E0DYg](https://youtu.be/Acg3TNwZ_5I)https://youtu.be/Acg3TNwZ_5I
+Video dimostrativo sull'uso dell'applicazione disponibile al link: <https://youtu.be/Acg3TNwZ_5I>
 
 ---
 
